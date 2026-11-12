@@ -15,9 +15,9 @@ Changing modes returns to page 1. Select a mode in the UI or use `?mode=baseline
 Each thumbnail follows two server-side routes:
 
 1. `/api/thumb/[id]` waits 1,500 ms by default, then returns a non-cacheable redirect with a new random signature.
-2. `/api/image/[id]` waits 500 ms by default, fetches the JPEG from Picsum, and returns it with `Cache-Control: private, max-age=3600`.
+2. `/api/image/[id]` waits 500 ms by default, fetches a JPEG from Unsplash, and returns it with `Cache-Control: private, max-age=3600`. Ten photos repeat across the 70 rows.
 
-The changing signature means the image URL can differ on every redirect, even when the thumbnail URL is the same. The image route requires outbound access to `picsum.photos`. Change the delays without redeploying, for example with `?hop1=1000&hop2=250`; values are in milliseconds and limited to 0-30000.
+The changing signature means the image URL can differ on every redirect, even when the thumbnail URL is the same. The image route requires outbound access to `images.unsplash.com`. Change the delays without redeploying, for example with `?hop1=1000&hop2=250`; values are in milliseconds and limited to 0-30000.
 
 ## Testing
 
@@ -37,3 +37,4 @@ npm run dev
 ```
 
 Open http://localhost:3000. Run `npm run build` to check the production build. React 19.2 or later is required for `Activity`.
+Run the image route tests with `node --experimental-default-type=module --test tests/image.test.mjs`.
