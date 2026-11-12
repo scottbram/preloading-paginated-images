@@ -1,3 +1,9 @@
+/**
+ * Fetch a Picsum JPEG after hop2 and return it with a private one-hour cache policy.
+ * Invalid ids and upstream failures return an error instead of a cacheable image.
+ * @param {import("next").NextApiRequest} request
+ * @param {import("next").NextApiResponse} response
+ */
 export default async function handler(request, response) {
   response.setHeader("Cache-Control", "no-store")
   if (request.method !== "GET") return response.status(405).end()

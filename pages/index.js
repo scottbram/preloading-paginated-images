@@ -5,19 +5,27 @@ const PAGE_SIZE = 7
 const PAGE_COUNT = 10
 const MODES = ["baseline", "preload", "activity"]
 
+/** Parse a delay in milliseconds, falling back for invalid values and limiting it to 30 seconds. */
 function delayValue(value, fallback) {
   if (value === null || value === "" || !Number.isFinite(Number(value))) return fallback
   return Math.min(30000, Math.max(0, Number(value)))
 }
 
+/** Build the same thumbnail URL for rendered images and next-page preloads. */
 function thumbnailUrl(id, settings) {
   return `/api/thumb/${id}?hop1=${settings.hop1}&hop2=${settings.hop2}`
 }
 
+/** Return the rows for a one-based page number. */
 function rowsForPage(rows, page) {
   return rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 }
 
+/**
+ * Compare baseline, Image preloading, and Activity-based pagination.
+ * Resource timing observes completed redirect chains, so image-hop counts are inferred
+ * from redirect timing and may exclude requests still in flight when a log entry is saved.
+ */
 export default function Home() {
   const [settings, setSettings] = useState(null)
   const [rows, setRows] = useState([])
@@ -80,6 +88,7 @@ export default function Home() {
     return () => images.forEach((image) => { image.src = "" })
   }, [page, rows, settings])
 
+  /** Finish a transition and allow resource timing entries to arrive before logging it. */
   function finishMeasurement(measurement, interrupted = false) {
     if (!measurement || measurement.finished) return
     measurement.finished = true
@@ -97,6 +106,7 @@ export default function Home() {
     }, 100)
   }
 
+  /** Mark a destination thumbnail complete after load, error, or a cached-image check. */
   function markLoaded(id, imagePage) {
     const measurement = active.current
     if (!measurement || measurement.to !== imagePage) return
@@ -112,6 +122,7 @@ export default function Home() {
     })
   }, [page, settings])
 
+  /** Start timing before rendering the destination page; interrupt any prior transition. */
   function changePage(nextPage) {
     if (nextPage === page || nextPage < 1 || nextPage > PAGE_COUNT) return
     finishMeasurement(active.current, true)

@@ -1,5 +1,11 @@
 import { randomUUID } from "node:crypto"
 
+/**
+ * Issue a non-cacheable redirect after hop1, with a unique signed URL for the image hop.
+ * Accepts ids 1-70 and forwards the bounded hop2 delay in milliseconds.
+ * @param {import("next").NextApiRequest} request
+ * @param {import("next").NextApiResponse} response
+ */
 export default async function handler(request, response) {
   response.setHeader("Cache-Control", "no-store")
   if (request.method !== "GET") return response.status(405).end()
