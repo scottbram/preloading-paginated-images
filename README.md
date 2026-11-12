@@ -11,3 +11,11 @@ To run this application:
 ```
 npm run dev
 ```
+
+## Image pagination test
+
+Open the deployed Vercel URL to compare baseline, preload, and Activity modes. Hard-reload between modes and leave DevTools' **Disable cache** unchecked. Test the deployed URL rather than the dev server.
+
+Choose a mode at the top or set `?mode=baseline`, `?mode=preload`, or `?mode=activity`. Set the simulated delays in milliseconds with `?hop1=1500&hop2=500` (values are limited to 0-30000 ms). Navigate between pages to record the time until every visible thumbnail loads or errors. Activity can optionally keep visited pages mounted.
+
+The log counts resource timing entries started during each transition. Browsers report a redirect chain as one resource entry, so image-hop counts are inferred from redirect timing. Requests still in flight when a measurement ends may not appear in the count.
